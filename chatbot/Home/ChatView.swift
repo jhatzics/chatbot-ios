@@ -8,13 +8,15 @@
 import SwiftUI
 
 
-struct ContentView: View {
+struct ChatView: View {
     @ObservedObject var viewModel = ViewModel()
     var body: some View {
         VStack {
             HStack {
                 Button {
-                    viewModel.askPermission()
+                    Task {
+                        await viewModel.askPermission()
+                    }
                 } label: {
                     Image(systemName: "lock.circle.fill")
                         .font(.largeTitle)
@@ -87,5 +89,5 @@ struct MessageView: View {
 }
 
 #Preview {
-    ContentView()
+    ChatView()
 }

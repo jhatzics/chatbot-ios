@@ -19,11 +19,18 @@ class ViewModel: ObservableObject {
     private var audioSession: AVAudioSession?
     private var audioEngine = AVAudioEngine()
     private var inputNode: AVAudioInputNode?
+    private var botClient: BotClient
     
-    func askPermission() {
+    init() {
+        botClient = BotClient()
+    }
+    
+    func askPermission() async {
         AVAudioApplication.requestRecordPermission { response in
             print(response ? "Permission granted" : "Permission denied")
         }
+        
+        try? await botClient.connect()
     }
     
     private func startAudioSession() {
