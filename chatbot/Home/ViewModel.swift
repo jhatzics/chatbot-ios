@@ -6,11 +6,14 @@
 //
 import MicrosoftCognitiveServicesSpeech
 import AVFAudio
+import Starscream
+
 
 let speechKey = "80b39db2d95c494693f4e204b867de8e"
 let speechRegion = "westus2"
 
-class ViewModel: ObservableObject {
+class ViewModel: ObservableObject, WebSocketDelegate {
+    
     @Published var messages: [Message] = []
     @Published var isRecording: Bool = false
     private var speechConfig: SPXSpeechConfiguration?
@@ -19,24 +22,83 @@ class ViewModel: ObservableObject {
     private var audioSession: AVAudioSession?
     private var audioEngine = AVAudioEngine()
     private var inputNode: AVAudioInputNode?
-    private var botClient: BotClient
-    
+    private var botService: BotService
+    private var socket: WebSocket?
+
     init() {
-        botClient = BotClient()
+        botService = BotService()
+        
+        Task {
+            let conv = try? await botService.initChat()
+            guard let conv = conv else { return }
+            connectSocket(url: conv.streamUrl)
+        }
     }
     
     func askPermission() async {
         AVAudioApplication.requestRecordPermission { response in
             print(response ? "Permission granted" : "Permission denied")
         }
-        
-        try? await botClient.connect()
     }
     
+    func sendMessage(_ text: String) async {
+        try? await botService.sendMessage(text)
+    }
+    
+    func connectSocket(url: String) {
+        var request = URLRequest(url: URL(string: url)!)
+        request.timeoutInterval = 5
+        socket = WebSocket(request: request)
+        socket?.delegate = self
+        socket?.connect()
+    }
+    
+    func didReceive(event: Starscream.WebSocketEvent, client: any Starscream.WebSocketClient) {
+        switch event {
+        case .connected(let headers):
+            print("websocket is connected: \(headers)")
+        case .disconnected(let reason, let code):
+            print("websocket is disconnected: \(reason) with code: \(code)")
+        case .text(let text):
+            print("Received text: \(text)")
+            guard let data = text.data(using: .utf8) else { return }
+            do {
+                let response = try JSONDecoder().decode(ActivitiesResponse.self, from: data)
+                guard let activity = response.activities.first else { return }
+                
+                DispatchQueue.main.async {
+                    guard let msg = activity.text else { return }
+                    self.messages.append(Message(text: msg, isUser: activity.from?.role != "bot"))
+                    if (activity.from?.role == "bot") {
+                        self.synthesisToSpeaker(msg)
+                    }
+                }
+            } catch {
+                print("Error: \(error.localizedDescription)")
+            }
+        case .binary(let data):
+            print("Received data: \(data.count)")
+        case .ping(_):
+            break
+        case .pong(_):
+            break
+        case .viabilityChanged(_):
+            break
+        case .reconnectSuggested(_):
+            break
+        case .cancelled:
+            break
+        case .error(let error):
+            print(error ?? "Generic error")
+            case .peerClosed:
+                   break
+        }
+    }
+        
     private func startAudioSession() {
         audioSession = AVAudioSession.sharedInstance()
         do {
-            try audioSession?.setCategory(.playAndRecord, mode: .default)
+            try audioSession?.setCategory(.playAndRecord, mode: .default, options: .allowBluetooth)
             try audioSession?.setActive(true)
         } catch {
             print("Error starting audio engine: \(error.localizedDescription)")
@@ -93,9 +155,12 @@ class ViewModel: ObservableObject {
             guard let voiceText = result.result.text else { return }
             guard !voiceText.isEmpty else { return }
             
-            DispatchQueue.main.async {
-                self?.messages.append(Message(text: voiceText, isUser: true))
-                self?.messages.append(Message(text: voiceText, isUser: false))
+//            DispatchQueue.main.async {
+//                self?.messages.append(Message(text: voiceText, isUser: true))
+//                self?.messages.append(Message(text: voiceText, isUser: false))
+//            }
+            Task {
+                await self?.sendMessage(voiceText)
             }
         }
         

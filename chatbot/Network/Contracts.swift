@@ -13,17 +13,22 @@ import Foundation
 struct Activity: Codable {
     var type: String
     var id: String?
-    var timestamp: Date?
     var from: From?
     var conversation: Conversation?
     var text: String?
     var locale: String?
 }
 
+struct ActivitiesResponse: Codable {
+    var activities: [Activity]
+    var watermark: String?
+}
+
 // Supporting models for Activity
 struct From: Codable {
     var id: String
     var name: String?
+    var role: String?
 }
 
 struct Conversation: Codable {
@@ -37,4 +42,15 @@ struct TokenResponse: Codable {
     var token: String
     var expires_in: Int
     var conversationId: String
+}
+
+struct ConversationResponse: Codable {
+    var conversationId: String
+    var token: String
+    var expires_in: Int
+    var streamUrl: String
+}
+
+struct SendMessageResponse: Codable {
+    var id: String
 }

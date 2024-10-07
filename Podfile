@@ -7,5 +7,6 @@ target 'chatbot' do
 
   # Pods for chatbot
   pod 'MicrosoftCognitiveServicesSpeech-iOS', '~> 1.40'
+  pod 'Starscream', '~> 4.0.6'
 
 end

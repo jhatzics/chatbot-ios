@@ -34,6 +34,14 @@ struct ChatView: View {
                     Image(systemName: "stop.circle.fill")
                         .font(.largeTitle)
                 }.disabled(!viewModel.isRecording)
+                Button {
+                    Task {
+                        await viewModel.sendMessage("")
+                    }
+                } label: {
+                    Image(systemName: "paperplane.circle.fill")
+                        .font(.largeTitle)
+                }
             }
 
             Spacer()
@@ -50,7 +58,7 @@ struct ChatView: View {
                             withAnimation {
                                 proxy.scrollTo(viewModel.messages.last?.id, anchor: .bottom)
                             }
-                            viewModel.synthesisToSpeaker(viewModel.messages[oldValue].text)
+//                            viewModel.synthesisToSpeaker(viewModel.messages[oldValue].text)
                         }
                     }
                 }

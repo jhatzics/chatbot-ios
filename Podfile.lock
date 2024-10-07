@@ -1,16 +1,20 @@
 PODS:
   - MicrosoftCognitiveServicesSpeech-iOS (1.40.0)
+  - Starscream (4.0.8)
 
 DEPENDENCIES:
   - MicrosoftCognitiveServicesSpeech-iOS (~> 1.40)
+  - Starscream (~> 4.0.6)
 
 SPEC REPOS:
   trunk:
     - MicrosoftCognitiveServicesSpeech-iOS
+    - Starscream
 
 SPEC CHECKSUMS:
   MicrosoftCognitiveServicesSpeech-iOS: 27edbb898c00da13b63a6e73e910d4ced8d54791
+  Starscream: 19b5533ddb925208db698f0ac508a100b884a1b9
 
-PODFILE CHECKSUM: 7a1dbdba4386f902c73626547c9754465a8fd468
+PODFILE CHECKSUM: 96d754221bb0c8b375f9c97309df94200dc92634
 
 COCOAPODS: 1.15.2
