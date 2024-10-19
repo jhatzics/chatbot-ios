@@ -13,11 +13,12 @@
 		F14371922CB2660B00D7A4F4 /* CopilotStudioClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F14371912CB265FE00D7A4F4 /* CopilotStudioClient.swift */; };
 		F14371942CB2C9ED00D7A4F4 /* DirectLineClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F14371932CB2C9ED00D7A4F4 /* DirectLineClient.swift */; };
 		F14371972CB2CB9100D7A4F4 /* BotService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F14371962CB2CB8D00D7A4F4 /* BotService.swift */; };
+		F18C392C2CC41DAF00E71866 /* VoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18C392B2CC41D9D00E71866 /* VoiceView.swift */; };
 		F19B4DED2CB1117F001F52AB /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F19B4DE72CB1117F001F52AB /* Preview Assets.xcassets */; };
 		F19B4DEE2CB1117F001F52AB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F19B4DE92CB1117F001F52AB /* Assets.xcassets */; };
 		F19B4DEF2CB1117F001F52AB /* chatbotApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19B4DEA2CB1117F001F52AB /* chatbotApp.swift */; };
 		F19B4DF02CB1117F001F52AB /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19B4DEB2CB1117F001F52AB /* ChatView.swift */; };
-		F19B4DFC2CB18AF9001F52AB /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19B4DFB2CB18AF6001F52AB /* ViewModel.swift */; };
+		F19B4DFC2CB18AF9001F52AB /* SharedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19B4DFB2CB18AF6001F52AB /* SharedViewModel.swift */; };
 		F19B4DFE2CB19748001F52AB /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19B4DFD2CB19744001F52AB /* Message.swift */; };
 /* End PBXBuildFile section */
 
@@ -30,13 +31,14 @@
 		F14371912CB265FE00D7A4F4 /* CopilotStudioClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotStudioClient.swift; sourceTree = "<group>"; };
 		F14371932CB2C9ED00D7A4F4 /* DirectLineClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectLineClient.swift; sourceTree = "<group>"; };
 		F14371962CB2CB8D00D7A4F4 /* BotService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotService.swift; sourceTree = "<group>"; };
+		F18C392B2CC41D9D00E71866 /* VoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceView.swift; sourceTree = "<group>"; };
 		F19B4DD62CB110E2001F52AB /* chatbot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = chatbot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F19B4DE72CB1117F001F52AB /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F19B4DE92CB1117F001F52AB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F19B4DEA2CB1117F001F52AB /* chatbotApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = chatbotApp.swift; sourceTree = "<group>"; };
 		F19B4DEB2CB1117F001F52AB /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		F19B4DFA2CB1874D001F52AB /* chatbot.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = chatbot.entitlements; sourceTree = "<group>"; };
-		F19B4DFB2CB18AF6001F52AB /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
+		F19B4DFB2CB18AF6001F52AB /* SharedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedViewModel.swift; sourceTree = "<group>"; };
 		F19B4DFD2CB19744001F52AB /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -69,14 +71,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		F143718D2CB263C700D7A4F4 /* Home */ = {
+		F143718D2CB263C700D7A4F4 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
+				F18C392B2CC41D9D00E71866 /* VoiceView.swift */,
 				F19B4DFD2CB19744001F52AB /* Message.swift */,
-				F19B4DFB2CB18AF6001F52AB /* ViewModel.swift */,
+				F19B4DFB2CB18AF6001F52AB /* SharedViewModel.swift */,
 				F19B4DEB2CB1117F001F52AB /* ChatView.swift */,
 			);
-			path = Home;
+			path = Chat;
 			sourceTree = "<group>";
 		};
 		F143718E2CB263F800D7A4F4 /* Network */ = {
@@ -132,7 +135,7 @@
 				F19B4DE82CB1117F001F52AB /* Preview Content */,
 				F143718E2CB263F800D7A4F4 /* Network */,
 				F14371952CB2CB8100D7A4F4 /* Services */,
-				F143718D2CB263C700D7A4F4 /* Home */,
+				F143718D2CB263C700D7A4F4 /* Chat */,
 				F143718B2CB262FE00D7A4F4 /* README.md */,
 			);
 			path = chatbot;
@@ -258,7 +261,8 @@
 				F14371972CB2CB9100D7A4F4 /* BotService.swift in Sources */,
 				F14371942CB2C9ED00D7A4F4 /* DirectLineClient.swift in Sources */,
 				F19B4DFE2CB19748001F52AB /* Message.swift in Sources */,
-				F19B4DFC2CB18AF9001F52AB /* ViewModel.swift in Sources */,
+				F19B4DFC2CB18AF9001F52AB /* SharedViewModel.swift in Sources */,
+				F18C392C2CC41DAF00E71866 /* VoiceView.swift in Sources */,
 				F14371902CB2644100D7A4F4 /* Contracts.swift in Sources */,
 				F14371922CB2660B00D7A4F4 /* CopilotStudioClient.swift in Sources */,
 				F19B4DF02CB1117F001F52AB /* ChatView.swift in Sources */,

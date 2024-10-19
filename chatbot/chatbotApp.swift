@@ -9,9 +9,14 @@ import SwiftUI
 
 @main
 struct chatbotApp: App {
+    
+    @StateObject private var sharedViewModel = SharedViewModel()
+    
     var body: some Scene {
+        
         WindowGroup {
             ChatView()
+                .environmentObject(sharedViewModel)
         }
     }
 }

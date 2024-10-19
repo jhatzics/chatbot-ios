@@ -12,10 +12,16 @@ import Starscream
 let speechKey = "80b39db2d95c494693f4e204b867de8e"
 let speechRegion = "westus2"
 
-class ViewModel: ObservableObject, WebSocketDelegate {
+enum Mode {
+    case chat, voice
+}
+
+class SharedViewModel: ObservableObject, WebSocketDelegate {
     
     @Published var messages: [Message] = []
     @Published var isRecording: Bool = false
+    @Published var inputText: String = ""
+    @Published var mode: Mode = .chat
     private var speechConfig: SPXSpeechConfiguration?
     private var speechRecognizer: SPXSpeechRecognizer?
     private var speechSynthesizer: SPXSpeechSynthesizer?
@@ -41,8 +47,16 @@ class ViewModel: ObservableObject, WebSocketDelegate {
         }
     }
     
-    func sendMessage(_ text: String) async {
+    func sendMessage(with text: String) async {
         try? await botService.sendMessage(text)
+    }
+    
+    func sendMessage() async {
+        guard !self.inputText.isEmpty else { return }
+        try? await botService.sendMessage(self.inputText)
+        DispatchQueue.main.async {
+            self.inputText = ""
+        }
     }
     
     func connectSocket(url: String) {
@@ -69,7 +83,7 @@ class ViewModel: ObservableObject, WebSocketDelegate {
                 DispatchQueue.main.async {
                     guard let msg = activity.text else { return }
                     self.messages.append(Message(text: msg, isUser: activity.from?.role != "bot"))
-                    if (activity.from?.role == "bot") {
+                    if (activity.from?.role == "bot" && self.mode == .voice) {
                         self.synthesisToSpeaker(msg)
                     }
                 }
@@ -143,11 +157,27 @@ class ViewModel: ObservableObject, WebSocketDelegate {
         
         speechSynthesizer = synthesizer
         
+        speechSynthesizer?.addSynthesisStartedEventHandler { [weak self] _,_  in
+            do {
+                try self?.speechRecognizer?.stopContinuousRecognition()
+            } catch {
+                print("speechRecognizer..stopped")
+            }
+        }
+        
+        speechSynthesizer?.addSynthesisCompletedEventHandler { [weak self] _, _ in
+            do {
+                try self?.speechRecognizer?.startContinuousRecognition()
+            } catch {
+                print("speechRecognizer..started")
+            }
+        }
+        
 
         return true
     }
 
-    func recognizeVoice() {
+    private func recognizeVoice() {
         startAudioSession()
         
         speechRecognizer?.addRecognizedEventHandler { [weak self] _, result in
@@ -160,7 +190,7 @@ class ViewModel: ObservableObject, WebSocketDelegate {
 //                self?.messages.append(Message(text: voiceText, isUser: false))
 //            }
             Task {
-                await self?.sendMessage(voiceText)
+                await self?.sendMessage(with: voiceText)
             }
         }
         
@@ -175,11 +205,24 @@ class ViewModel: ObservableObject, WebSocketDelegate {
     }
     
     func stopSpeaking() {
-        isRecording = false
-        stopAudioSession()
+        do {
+            try self.speechSynthesizer?.stopSpeaking()
+        } catch {
+            print("Error: \(error)")
+        }
     }
     
-    func synthesisToSpeaker(_ text: String) {
+    func stopRecording() {
+        do {
+            isRecording = false
+            try self.speechRecognizer?.stopContinuousRecognition()
+            stopAudioSession()
+        } catch {
+            print("Error: \(error)")
+        }
+    }
+    
+    private func synthesisToSpeaker(_ text: String) {
         guard let synthesizer = speechSynthesizer else { return }
         
         DispatchQueue.main.async {
